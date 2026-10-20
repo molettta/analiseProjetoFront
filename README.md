@@ -13,19 +13,28 @@ Tecnologias Móveis e Híbridas.
 
 ## As etiquetas
 
+O fim de uma aula **é** o começo da seguinte — por isso o mesmo ponto leva duas etiquetas.
+
 | Etiqueta | O que é |
 |---|---|
 | `aula-16-fim` | Fim de 05/10: listas, `.map()`/`key`, *lifting state up* e formulário controlado |
+| `aula-17-inicio` | O mesmo ponto de `aula-16-fim` |
+| `aula-17-fim` / `aula-18-inicio` | Fim de 09/10: composição de telas (Detalhe, Resumo), pilha vs abas por estado |
+| `aula-18-fim` | Fim de 16/10: remover registro, estado vazio, roteiro de teste do fluxo completo |
 
-## Quebrei tudo, quero recomeçar do fim da aula 16
+> As aulas 01 a 15 não têm etiqueta porque este repositório só passou a
+> guardar código a partir do estado de fim da aula 16 — não existe um commit
+> real para o que vinha antes disso.
+
+## Quebrei tudo, quero recomeçar do fim de uma aula
 
 ```bash
 git fetch --tags
-git checkout -B minha-aula-17 aula-16-fim
+git checkout -B minha-aula-18 aula-17-fim    # ou a etiqueta da aula desejada
 ```
 
 O `-B` cria um ramo naquele ponto. **Não** vá direto para a etiqueta
-(`git checkout aula-16-fim`): isso deixa você em *detached HEAD*, e o commit
+(`git checkout aula-17-fim`): isso deixa você em *detached HEAD*, e o commit
 que fizer no fim da aula não gruda em lugar nenhum — o trabalho do dia some.
 
 ## Rodar
@@ -35,19 +44,22 @@ npm install
 npm run dev
 ```
 
-## Arquivos do dia
+## Arquivos (estado atual — fim da aula 18)
 
 | Arquivo | O que faz |
 |---|---|
-| `src/types.ts` | `type Registro` — `id`, `titulo`, `concluido` |
-| `src/components/Cartao.tsx` | Componente sem estado próprio — recebe `concluido` e `onToggle` por prop |
-| `src/components/FormularioNovoRegistro.tsx` | Formulário controlado que adiciona um registro novo |
-| `src/App.tsx` | Fonte única de verdade: o array de registros mora aqui |
+| `src/types.ts` | `type Registro` — `id`, `titulo`, `descricao?`, `concluido` |
+| `src/components/Cartao.tsx` | Sem estado próprio — recebe `concluido` por prop; avisa o pai com `onToggle`, `onVerDetalhes`, `onRemover` |
+| `src/components/FormularioNovoRegistro.tsx` | Formulário controlado (título + descrição) que adiciona um registro novo |
+| `src/components/TelaDetalhe.tsx` | Mostra um registro já resolvido pelo pai — não busca nada sozinha |
+| `src/components/TelaResumo.tsx` | Contagens calculadas na hora a partir do array recebido — nenhum estado duplicado |
+| `src/App.tsx` | Fonte única de verdade: o array de registros e a tela atual moram aqui |
 
 ## Ambiente validado
 
 Vite 8 · React 19 · TypeScript ~6.0 (template `react-ts` padrão)
 
-Testado nesta máquina: `tsc --noEmit` limpo, `npm run build` limpo, e
-confirmado rodando no navegador (listar, adicionar, marcar como concluído —
-cada card reage só a si mesmo).
+Testado nesta máquina a cada aula: `tsc --noEmit` limpo, `npm run build`
+limpo, e confirmado rodando no navegador — listar, adicionar (com e sem
+descrição), marcar, ver detalhe, voltar, trocar de aba, remover, e o estado
+vazio depois de remover tudo.

@@ -1,4 +1,4 @@
-// src/App.tsx - versao final: lista/detalhe/resumo, trocadas por estado
+// src/App.tsx - versao final: lista/detalhe/resumo + remover + estado vazio
 import { useState } from "react";
 import { Cartao } from "./components/Cartao";
 import { FormularioNovoRegistro } from "./components/FormularioNovoRegistro";
@@ -35,6 +35,10 @@ function App() {
     setRegistros([...registros, novo]);
   }
 
+  function remover(id: string) {
+    setRegistros(registros.filter((r) => r.id !== id));
+  }
+
   function abrirDetalhe(id: string) {
     setIdSelecionado(id);
     setTelaAtual("detalhe");
@@ -49,7 +53,7 @@ function App() {
     if (!registro) {
       return (
         <div>
-          <p>Registro nao encontrado.</p>
+          <p>Registro nao encontrado. Pode ter sido removido.</p>
           <button onClick={voltarParaLista}>Voltar</button>
         </div>
       );
@@ -75,15 +79,20 @@ function App() {
       ) : (
         <>
           <FormularioNovoRegistro onAdicionar={adicionar} />
-          {registros.map((r) => (
-            <Cartao
-              key={r.id}
-              titulo={r.titulo}
-              concluido={r.concluido}
-              onToggle={() => alternar(r.id)}
-              onVerDetalhes={() => abrirDetalhe(r.id)}
-            />
-          ))}
+          {registros.length === 0 ? (
+            <p>Nenhum registro ainda. Use o formulario acima para criar o primeiro.</p>
+          ) : (
+            registros.map((r) => (
+              <Cartao
+                key={r.id}
+                titulo={r.titulo}
+                concluido={r.concluido}
+                onToggle={() => alternar(r.id)}
+                onVerDetalhes={() => abrirDetalhe(r.id)}
+                onRemover={() => remover(r.id)}
+              />
+            ))
+          )}
         </>
       )}
     </div>

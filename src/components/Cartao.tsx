@@ -1,12 +1,13 @@
-// src/components/Cartao.tsx - ganha o botao "Ver detalhes"
+// src/components/Cartao.tsx - ganha o botao "Remover"
 type CartaoProps = {
   titulo: string;
   concluido: boolean;
   onToggle: () => void;
   onVerDetalhes: () => void;
+  onRemover: () => void;
 };
 
-export function Cartao({ titulo, concluido, onToggle, onVerDetalhes }: CartaoProps) {
+export function Cartao({ titulo, concluido, onToggle, onVerDetalhes, onRemover }: CartaoProps) {
   return (
     <div style={{ border: "1px solid #ccc", borderRadius: 8,
                   padding: 16, marginBottom: 12 }}>
@@ -16,6 +17,7 @@ export function Cartao({ titulo, concluido, onToggle, onVerDetalhes }: CartaoPro
         {concluido ? "Desfazer" : "Marcar como concluido"}
       </button>
       <button onClick={onVerDetalhes}>Ver detalhes</button>
+      <button onClick={onRemover}>Remover</button>
     </div>
   );
 }

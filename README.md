@@ -20,7 +20,8 @@ O fim de uma aula **é** o começo da seguinte — por isso o mesmo ponto leva d
 | `aula-16-fim` | Fim de 05/10: listas, `.map()`/`key`, *lifting state up* e formulário controlado |
 | `aula-17-inicio` | O mesmo ponto de `aula-16-fim` |
 | `aula-17-fim` / `aula-18-inicio` | Fim de 09/10: composição de telas (Detalhe, Resumo), pilha vs abas por estado |
-| `aula-18-fim` | Fim de 16/10: remover registro, estado vazio, roteiro de teste do fluxo completo |
+| `aula-18-fim` / `aula-19-inicio` | Fim de 16/10: remover registro, estado vazio, roteiro de teste do fluxo completo |
+| `aula-19-fim` | Refino de UX: Bootstrap (cards, badges, nav-pills), boilerplate do Vite removido |
 
 > As aulas 01 a 15 não têm etiqueta porque este repositório só passou a
 > guardar código a partir do estado de fim da aula 16 — não existe um commit
@@ -44,12 +45,12 @@ npm install
 npm run dev
 ```
 
-## Arquivos (estado atual — fim da aula 18)
+## Arquivos (estado atual — fim da aula 19)
 
 | Arquivo | O que faz |
 |---|---|
 | `src/types.ts` | `type Registro` — `id`, `titulo`, `descricao?`, `concluido` |
-| `src/components/Cartao.tsx` | Sem estado próprio — recebe `concluido` por prop; avisa o pai com `onToggle`, `onVerDetalhes`, `onRemover` |
+| `src/components/Cartao.tsx` | Sem estado próprio — recebe `concluido` por prop; avisa o pai com `onToggle`, `onVerDetalhes`, `onRemover`. Agora é um `card` do Bootstrap |
 | `src/components/FormularioNovoRegistro.tsx` | Formulário controlado (título + descrição) que adiciona um registro novo |
 | `src/components/TelaDetalhe.tsx` | Mostra um registro já resolvido pelo pai — não busca nada sozinha |
 | `src/components/TelaResumo.tsx` | Contagens calculadas na hora a partir do array recebido — nenhum estado duplicado |
@@ -57,9 +58,11 @@ npm run dev
 
 ## Ambiente validado
 
-Vite 8 · React 19 · TypeScript ~6.0 (template `react-ts` padrão)
+Vite 8 · React 19 · TypeScript ~6.0 (template `react-ts` padrão) · Bootstrap 5
+(só CSS, importado em `main.tsx` — nenhum JS do Bootstrap é usado)
 
 Testado nesta máquina a cada aula: `tsc --noEmit` limpo, `npm run build`
 limpo, e confirmado rodando no navegador — listar, adicionar (com e sem
 descrição), marcar, ver detalhe, voltar, trocar de aba, remover, e o estado
-vazio depois de remover tudo.
+vazio depois de remover tudo. Na aula 19, testado também em largura estreita
+(card com os três botões de ação quebrando linha em vez de estourar).

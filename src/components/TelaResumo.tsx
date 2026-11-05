@@ -11,10 +11,33 @@ export function TelaResumo({ registros }: TelaResumoProps) {
 
   return (
     <div>
-      <h2>Resumo</h2>
-      <p>Total de registros: {registros.length}</p>
-      <p>Concluidos: {concluidos}</p>
-      <p>Pendentes: {pendentes}</p>
+      <h2 className="h4 mb-3">Resumo</h2>
+      <div className="row g-3">
+        <div className="col-4">
+          <div className="card text-center">
+            <div className="card-body">
+              <p className="display-6 mb-0">{registros.length}</p>
+              <p className="text-muted mb-0">Total</p>
+            </div>
+          </div>
+        </div>
+        <div className="col-4">
+          <div className="card text-center border-success">
+            <div className="card-body">
+              <p className="display-6 mb-0 text-success">{concluidos}</p>
+              <p className="text-muted mb-0">Concluidos</p>
+            </div>
+          </div>
+        </div>
+        <div className="col-4">
+          <div className="card text-center border-secondary">
+            <div className="card-body">
+              <p className="display-6 mb-0 text-secondary">{pendentes}</p>
+              <p className="text-muted mb-0">Pendentes</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

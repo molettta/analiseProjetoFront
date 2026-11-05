@@ -52,9 +52,9 @@ function App() {
     const registro = registros.find((r) => r.id === idSelecionado);
     if (!registro) {
       return (
-        <div>
-          <p>Registro nao encontrado. Pode ter sido removido.</p>
-          <button onClick={voltarParaLista}>Voltar</button>
+        <div className="container py-4" style={{ maxWidth: 720 }}>
+          <p className="text-danger">Registro nao encontrado. Pode ter sido removido.</p>
+          <button className="btn btn-secondary" onClick={voltarParaLista}>Voltar</button>
         </div>
       );
     }
@@ -62,17 +62,27 @@ function App() {
   }
 
   return (
-    <div>
-      <h1>Hello T-Sistema</h1>
+    <div className="container py-4" style={{ maxWidth: 720 }}>
+      <h1 className="h3 mb-4">Hello T-Sistema</h1>
 
-      <nav style={{ marginBottom: 16 }}>
-        <button onClick={() => setTelaAtual("lista")} disabled={telaAtual === "lista"}>
-          Registros
-        </button>
-        <button onClick={() => setTelaAtual("resumo")} disabled={telaAtual === "resumo"}>
-          Resumo
-        </button>
-      </nav>
+      <ul className="nav nav-pills mb-4">
+        <li className="nav-item">
+          <button
+            className={`nav-link ${telaAtual === "lista" ? "active" : ""}`}
+            onClick={() => setTelaAtual("lista")}
+          >
+            Registros
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${telaAtual === "resumo" ? "active" : ""}`}
+            onClick={() => setTelaAtual("resumo")}
+          >
+            Resumo
+          </button>
+        </li>
+      </ul>
 
       {telaAtual === "resumo" ? (
         <TelaResumo registros={registros} />
@@ -80,7 +90,7 @@ function App() {
         <>
           <FormularioNovoRegistro onAdicionar={adicionar} />
           {registros.length === 0 ? (
-            <p>Nenhum registro ainda. Use o formulario acima para criar o primeiro.</p>
+            <p className="text-muted">Nenhum registro ainda. Use o formulario acima para criar o primeiro.</p>
           ) : (
             registros.map((r) => (
               <Cartao

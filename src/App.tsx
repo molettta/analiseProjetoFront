@@ -1,8 +1,9 @@
-// src/App.tsx - os registros agora vem da API, nao de um array inventado
+// src/App.tsx - aula 21: dados da API de verdade, com login; a mensagem de erro vem da propria API
 import { useEffect, useState } from "react";
 import { Cartao } from "./components/Cartao";
 import { FormularioNovoRegistro } from "./components/FormularioNovoRegistro";
 import { TelaDetalhe } from "./components/TelaDetalhe";
+import { TelaLogin } from "./components/TelaLogin";
 import { TelaResumo } from "./components/TelaResumo";
 import type { Registro } from "./types";
 import * as api from "./api";
@@ -10,11 +11,24 @@ import * as api from "./api";
 type Tela = "lista" | "detalhe" | "resumo";
 
 function App() {
+  const [logado, setLogado] = useState(api.temSessao());
+  const [avisoLogin, setAvisoLogin] = useState<string | null>(null);
   const [registros, setRegistros] = useState<Registro[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
   const [telaAtual, setTelaAtual] = useState<Tela>("lista");
-  const [idSelecionado, setIdSelecionado] = useState<string | null>(null);
+  const [idSelecionado, setIdSelecionado] = useState<number | null>(null);
+
+  // 401 = a sessao acabou: volta para o login. Qualquer outro erro: mostra a
+  // mensagem que a API escreveu (400, 403, 404...) em vez de uma frase generica.
+  function tratarErro(falha: unknown, mensagemPadrao: string) {
+    if (falha instanceof api.ErroDaApi && falha.status === 401) {
+      setLogado(false);
+      setAvisoLogin("Sua sessao expirou. Entre de novo.");
+      return;
+    }
+    setErro(falha instanceof Error ? falha.message : mensagemPadrao);
+  }
 
   function carregar() {
     setCarregando(true);
@@ -22,22 +36,35 @@ function App() {
     api
       .listar()
       .then((lista) => setRegistros(lista))
-      .catch(() => setErro("Nao foi possivel carregar os registros. O servidor da API esta rodando?"))
+      .catch((falha) => tratarErro(falha, "Nao foi possivel carregar os registros."))
       .finally(() => setCarregando(false));
   }
 
   useEffect(() => {
-    carregar();
-  }, []);
+    if (logado) carregar();
+  }, [logado]);
 
-  async function alternar(id: string) {
+  async function entrar(email: string, senha: string) {
+    await api.entrar(email, senha); // se falhar, o erro sobe para a TelaLogin mostrar
+    setAvisoLogin(null);
+    setLogado(true);
+  }
+
+  function sair() {
+    api.sair();
+    setRegistros([]);
+    setTelaAtual("lista");
+    setLogado(false);
+  }
+
+  async function alternar(id: number) {
     const atual = registros.find((r) => r.id === id);
     if (!atual) return;
     try {
       await api.atualizar(id, !atual.concluido);
       carregar();
-    } catch {
-      setErro("Nao foi possivel atualizar o registro.");
+    } catch (falha) {
+      tratarErro(falha, "Nao foi possivel atualizar o registro.");
     }
   }
 
@@ -45,27 +72,31 @@ function App() {
     try {
       await api.criar(titulo, descricao);
       carregar();
-    } catch {
-      setErro("Nao foi possivel adicionar o registro.");
+    } catch (falha) {
+      tratarErro(falha, "Nao foi possivel adicionar o registro.");
     }
   }
 
-  async function remover(id: string) {
+  async function remover(id: number) {
     try {
       await api.remover(id);
       carregar();
-    } catch {
-      setErro("Nao foi possivel remover o registro.");
+    } catch (falha) {
+      tratarErro(falha, "Nao foi possivel remover o registro.");
     }
   }
 
-  function abrirDetalhe(id: string) {
+  function abrirDetalhe(id: number) {
     setIdSelecionado(id);
     setTelaAtual("detalhe");
   }
 
   function voltarParaLista() {
     setTelaAtual("lista");
+  }
+
+  if (!logado) {
+    return <TelaLogin aviso={avisoLogin} onEntrar={entrar} />;
   }
 
   if (telaAtual === "detalhe") {
@@ -83,7 +114,10 @@ function App() {
 
   return (
     <div className="container py-4" style={{ maxWidth: 720 }}>
-      <h1 className="h3 mb-4">Hello T-Sistema</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h3 mb-0">Hello T-Sistema</h1>
+        <button className="btn btn-sm btn-outline-secondary" onClick={sair}>Sair</button>
+      </div>
 
       {erro && (
         <div className="alert alert-danger d-flex justify-content-between align-items-center" role="alert">

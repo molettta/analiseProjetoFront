@@ -1,7 +1,0 @@
-{
-  "registros": [
-    { "id": "1", "titulo": "Item A", "concluido": false },
-    { "id": "2", "titulo": "Item B", "concluido": false },
-    { "id": "3", "titulo": "Item C", "concluido": false }
-  ]
-}

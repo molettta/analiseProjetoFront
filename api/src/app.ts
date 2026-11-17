@@ -12,9 +12,11 @@
 // de verdade como efeito colateral.
 // ============================================================================
 
+import cors from 'cors';
 import express from 'express';
 
 import { errorHandler, notFoundHandler } from './middleware/error';
+import registroRoutes from './routes/registro.routes';
 import userRoutes from './routes/user.routes';
 
 export function createApp() {
@@ -23,6 +25,14 @@ export function createApp() {
   // A ORDEM DAS CHAMADAS `app.use` É A ORDEM DE EXECUÇÃO.
   // O Express testa cada middleware registrado, de cima para baixo, até algum
   // responder. Trocar a ordem dos blocos abaixo quebra a aplicação.
+
+  // 0. CORS (aula 21) — libera o front do Vite (outra porta) a chamar a API.
+  //    É regra do NAVEGADOR, não do servidor: curl, Postman e Bruno nunca
+  //    esbarram nela. Precisa vir antes das rotas, porque o navegador manda
+  //    um OPTIONS antes do pedido de verdade, e é este middleware que responde.
+  //    Só a origem do front é liberada — "qualquer origem" (*) aqui deixaria
+  //    qualquer site chamar a sua API pelo navegador de quem estiver logado.
+  app.use(cors({ origin: 'http://localhost:5173' }));
 
   // 1. Parser do corpo da requisição.
   //    Transforma o JSON recebido em objeto e o coloca em `req.body`.
@@ -42,6 +52,7 @@ export function createApp() {
   //    O prefixo '/users' é somado aos caminhos definidos no router, então o
   //    '/login' de lá vira '/users/login' aqui.
   app.use('/users', userRoutes);
+  app.use('/registros', registroRoutes); // aula 21
 
   // 4. 404 — só chega aqui quem não bateu em nenhuma rota acima.
   //    Por isso precisa ser o penúltimo: registrado antes das rotas, ele

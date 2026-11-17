@@ -91,3 +91,20 @@ model Permission {
 
   roles Role[] @relation("RolePermissions")
 }
+
+// ----------------------------------------------------------------------------
+// Registro — a entidade do Hello T-Sistema (aula 21). No seu projeto, aqui
+// entra a entidade do SEU domínio: Livro, OrdemDeServico, Consulta...
+// ----------------------------------------------------------------------------
+model Registro {
+  id Int @id @default(autoincrement())
+
+  titulo String
+
+  // O "?" deixa o campo opcional: no banco vira NULL, e no TypeScript o tipo
+  // gerado é `string | null` — repare que é null, não undefined.
+  descricao String?
+
+  concluido Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

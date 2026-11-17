@@ -32,8 +32,8 @@ const BCRYPT_ROUNDS = 10;
  * conforme o sistema cresce.
  */
 const ROLE_PERMISSIONS = {
-  Admin: ['users:list', 'users:write', 'users:read'],
-  User: ['users:read'],
+  Admin: ['users:list', 'users:write', 'users:read', 'registros:list', 'registros:write'],
+  User: ['users:read', 'registros:list'],
 } as const;
 
 async function main() {
